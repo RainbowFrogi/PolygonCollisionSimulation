@@ -2,18 +2,20 @@ import matplotlib.pyplot as plt
 import math
 
 # Alkuperäisen kolmion kärkipisteet (x, y)
-pisteet0 = [(-1, -1), (1, 0), (-1, 1)]
+pisteet0 = [(3, 3), (5, 4), (3, 5)]
 
 # Simulaatioasetukset
 g = 9.81   # Painovoiman kiihtyvyys (m/s^2)
 dt = 0.1   # ajanväli (s)
-angular_velocity = -1.5  # kulmanopeus (rad/s)
+angular_velocity = -1.2  # kulmanopeus (rad/s)
 
 # Alkuperäiset nopeudet kappaleelle
 vx = 4   # horisontaalinen nopeus (m/s)
 vy = 8   # vertikaalinen nopeus (m/s)
 
-for _ in range(20):
+while True:
+	i = 0
+
 	# pura pisteet0 listasta x- ja y-koordinaatit erikseen
 	xcooords0, ycoords0 = zip(*pisteet0)
 	xcoords = [x for x in xcooords0]
@@ -35,8 +37,8 @@ for _ in range(20):
 	rotation_angle = angular_velocity * dt
 
 	# Kolmion keskipiste, jonka ympäri pyöritys tehdään
-	cx = sum(x for x, _ in pisteet0) / len(pisteet0)
-	cy = sum(y for _, y in pisteet0) / len(pisteet0)
+	cx = sum(x for x, i in pisteet0) / len(pisteet0)
+	cy = sum(y for i, y in pisteet0) / len(pisteet0)
 
 	# Pyöritetään jokainen kärkipiste keskipisteen ympäri
 	rotated_points = []
@@ -55,6 +57,10 @@ for _ in range(20):
 	dx = vx_avg * dt 
 	dy = vy_avg * dt
 
+	if (pisteet0[0][1] < 0 or pisteet0[1][1] < 0 or pisteet0[2][1] < 0 and vy_avg < 0):
+		print("Collision detected at time:", i*dt, "seconds")
+		break
+
 	# Siirretään kaikki kärkipisteet laskettujen dx ja dy arvojen verran
 	pisteet0 = [(x + dx, y + dy) for x, y in pisteet0]
 
@@ -62,5 +68,8 @@ for _ in range(20):
 	vx = vlx
 	vy = vly
 
+	i += 1
+
+plt.axhline(y=0, color='r', linestyle='--')
 plt.gca().set_aspect('equal', adjustable='box')
 plt.show()
